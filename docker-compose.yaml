@@ -1,12 +1,10 @@
-version: '3.8'
+version: '3.6'
 
 services:
   proxy:
-    image: proxy
-    container_name: proxy
-    build:
-      dockerfile: .docker/Dockerfile
-      context: "."
-    command: ['python', '/src/app.py', '--port=9000']
+    image: simple-proxy
+    container_name: simple-proxy-container
+    build: .
+    command: ["/src/app.py", "--port=9000"]
     ports:
-     - 9000:9000
+     - "9000:9000"

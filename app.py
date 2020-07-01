@@ -59,7 +59,7 @@ if __name__ == '__main__':
     args = parser.parse_args(sys.argv[1:])
 
     print(f'Http server is starting on port {args.port}...')
-    server_address = ('127.0.0.1', args.port)
+    server_address = ('0.0.0.0', args.port)
     httpd = HTTPServer(server_address, ProxyHTTPRequestHandler)
     print('Http server is started successfully!')
     httpd.serve_forever()
