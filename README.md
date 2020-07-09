@@ -14,4 +14,4 @@ Make sure you have installed docker and docker-compose.
 `docker-compose up --build -d`
 
 After that you will be able to open using your favourite browser 
-http://localhost:9000/uborka-kvartiry/
+http://localhost:9000/wiki/Medium_(website)

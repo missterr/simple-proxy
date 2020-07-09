@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 
 import argparse
-import re
 import sys
-from functools import partial
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from itertools import cycle
 
 import requests
 
-HOST = 'lifehacker.ru'
-EMOJI = ('\U0001F606', '\U0001f600', '\U0001F606', '\U0001F923')
+from parser import Parser
+from settings import HOST
 
 
 class ProxyHTTPRequestHandler(SimpleHTTPRequestHandler):
@@ -28,7 +25,7 @@ class ProxyHTTPRequestHandler(SimpleHTTPRequestHandler):
             return None
 
         if 'text/html' in response.headers.get('Content-Type', ''):
-            content = self._add_emoji(content)
+            content = Parser.process(content)
             response.headers.update({'Content-Length': str(len(content))})
 
         self.send_response(response.status_code)
@@ -38,19 +35,6 @@ class ProxyHTTPRequestHandler(SimpleHTTPRequestHandler):
     def _send_headers(self, headers):
         map(self.send_header, headers.items())
         self.end_headers()
-
-    @staticmethod
-    def _add_emoji(content: bytes) -> bytes:
-        pattern = r'(\b[а-яА-Я]{6})([.,\/#!$%\^&\*;:{}=\-_`~()«»<>\s])'
-        compiled = re.compile(pattern)
-
-        def callback(match, emoji):
-            return f'{match.group(1)}{next(emoji)}{match.group(2)}'
-
-        callback = partial(callback, emoji=cycle(EMOJI))
-        processed = compiled.sub(callback, content.decode())
-
-        return processed.encode()
 
 
 if __name__ == '__main__':
