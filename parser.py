@@ -12,15 +12,16 @@ from settings import EMOJI
 class Parser:
     """A helper class which is written in the sake of isolating business logic"""
 
-    @staticmethod
-    def _add_emoji(content: str, emoji_cycle: Iterator) -> str:
-        pattern = r'(\b[a-zA-Zа-яА-Я]{6})([.,\/#!$%\^&\*;:{}=\-_`~()«»<>\s]|$)'
-        compiled = re.compile(pattern)
+    pattern = r'(\b[a-zA-Zа-яА-Я]{6})([.,\/#!$%\^&\*;:{}=\-_`~()«»<>\s]|$)'
+    compiled = re.compile(pattern)
+
+    @classmethod
+    def _add_emoji(cls, content: str, emoji_cycle: Iterator) -> str:
 
         def callback(match):
             return f'{match.group(1)}{next(emoji_cycle)}{match.group(2)}'
 
-        return compiled.sub(callback, content)
+        return cls.compiled.sub(callback, content)
 
     @classmethod
     def process(cls, string: bytes) -> bytes:
